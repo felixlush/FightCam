@@ -31,16 +31,34 @@ Specificity: 0.8310 <br>
 The pipeline for the model is made up of four stages
 
 1. Video Processing
-  - 20 frames are randomly sampled from each video to improve generalisation and reduce compute + training cost
+  - 20 frames are randomly sampled from each video to improve generalisation and reduce compute + training cost.
+  - Frames are resized to 224x224
+  - Passed through augmentation (colour jitter, random horizontal flip ect)
 2. Feature Extraction
+  - Each frame is encoded by a pretrained ResNet50 with the final layer removed
+  - Produdes a feature vector per frame
 3. Temporal Pattern Extraction
+  - The 20 feature vectors from each videos are then fed as a sequence into a 2-layer BiLSTM (hidden size 256) which learning motion and escalation patterns
 4. Classification
+  - Final hidden layer state goes through a small MLP
+  - MLP consisits of (Linear -> Relu -> Dropout -> Linear) to produce Violent/Non Violent Prediction
 
 
-<img width="1426" height="951" alt="FightCam3" src="https://github.com/user-attachments/assets/29b5cf5c-d56f-402a-b671-a6327c01bd5d" />
+<img width="1426" height="951" alt="FightCamWhiteBackground" src="https://github.com/user-attachments/assets/21b75f45-bcfc-4127-8b72-716761276784" />
+
 
 ## Dataset
+In this project we used the RWF-2000 Dataset. RWF-2000 Consists of 2000 real world surveillance clips each arounf 5 seconds long. Before training we processed the dataset by decoding each video into JPEG frames with OpenCV
 
 ## How to run
+**Requirements:**
+- Python 3.9+
+- Pytorch
+- Torchvision, numpy, pillow, scikit-learn, matplotlib, tqdm, tensorboard
 
+**Setup**
+1. Clone the repo
+2. Get the dataset from RWF official <a src="https://github.com/mchengny/RWF2000-Video-Database-for-Violence-Detection">Repo</a>
+3. Point the notebook to the datasource via the dataset_ath variable
+4. Run the notebook from top to bottom
 
